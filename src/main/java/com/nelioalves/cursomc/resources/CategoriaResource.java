@@ -1,8 +1,6 @@
 package com.nelioalves.cursomc.resources;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +14,7 @@ import com.nelioalves.cursomc.services.CategoriaSevice;
 @RequestMapping(value="/categorias")
 public class CategoriaResource {
 	
+	@Autowired
 	private CategoriaSevice categoriaService;
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
@@ -25,6 +24,6 @@ public class CategoriaResource {
 		
 
 		
-		return ResponseEntity.ok(categoria);
+		return ResponseEntity.ok().body(categoria);
 	}
 }
