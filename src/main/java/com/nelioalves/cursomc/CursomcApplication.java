@@ -1,6 +1,7 @@
 package com.nelioalves.cursomc;
 
 import java.util.Arrays;
+import java.util.Calendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,13 +13,20 @@ import com.nelioalves.cursomc.domain.Cidade;
 import com.nelioalves.cursomc.domain.Cliente;
 import com.nelioalves.cursomc.domain.Endereco;
 import com.nelioalves.cursomc.domain.Estado;
+import com.nelioalves.cursomc.domain.Pagamento;
+import com.nelioalves.cursomc.domain.PagamentoComBoleto;
+import com.nelioalves.cursomc.domain.PagamentoComCartao;
+import com.nelioalves.cursomc.domain.Pedido;
 import com.nelioalves.cursomc.domain.Produto;
+import com.nelioalves.cursomc.domain.enumerated.EstadoPagamento;
 import com.nelioalves.cursomc.domain.enumerated.TipoCliente;
 import com.nelioalves.cursomc.repository.CategoriaRepository;
 import com.nelioalves.cursomc.repository.CidadeRepository;
 import com.nelioalves.cursomc.repository.ClienteRepository;
 import com.nelioalves.cursomc.repository.EnderecoRepository;
 import com.nelioalves.cursomc.repository.EstadoRepository;
+import com.nelioalves.cursomc.repository.PagamentoRepository;
+import com.nelioalves.cursomc.repository.PedidoRepository;
 import com.nelioalves.cursomc.repository.ProdutoRepository;
 
 @SpringBootApplication
@@ -41,6 +49,12 @@ public class CursomcApplication implements CommandLineRunner {
 	
 	@Autowired
 	private EnderecoRepository enderecoRepository;
+	
+	@Autowired
+	private PedidoRepository pedidoRepository;
+	
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -81,6 +95,15 @@ public class CursomcApplication implements CommandLineRunner {
 		cliente1.getTelefones().addAll(Arrays.asList("991955617","999999999"));
 		
 		Endereco endereco = new Endereco(null, "Rua Nilo Geber", "73", "Ouro verde", "69082550", cidade2, cliente1);
+		Endereco endereco2 = new Endereco(null, "Rua Nilo Geber 2", "773", "Coroad", "69082550", cidade2, cliente1);
+		
+		Pedido pedido = new Pedido(null, Calendar.getInstance().getTime(),  cliente1, endereco);
+		Pedido pedido2 = new Pedido(null, Calendar.getInstance().getTime(),  cliente1, endereco2);
+		
+		Pagamento pagamento = new PagamentoComBoleto(null, EstadoPagamento.QUITADO, pedido,Calendar.getInstance().getTime(),null);
+		pedido.setPagamento(pagamento);
+		Pagamento pagamento2 = new PagamentoComCartao(null, EstadoPagamento.PENDENTE, pedido2,3);
+		pedido2.setPagamento(pagamento2);
 		
 		categoriaRepository.saveAll(Arrays.asList(categoria, categoria2));
 		produtoRepository.saveAll(Arrays.asList(produto, produto2, produto3));
@@ -89,7 +112,10 @@ public class CursomcApplication implements CommandLineRunner {
 		cidadeRepository.saveAll(Arrays.asList(cidade, cidade2, cidade3));
 		
 		clienteRepository.saveAll(Arrays.asList(cliente1));
-		enderecoRepository.saveAll(Arrays.asList(endereco));
+		enderecoRepository.saveAll(Arrays.asList(endereco,endereco2));
+		
+		pagamentoRepository.saveAll(Arrays.asList(pagamento,pagamento2));
+		pedidoRepository.saveAll(Arrays.asList(pedido,pedido2));
 	}
 
 }
