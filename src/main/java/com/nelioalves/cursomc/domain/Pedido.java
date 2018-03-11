@@ -1,10 +1,8 @@
 package com.nelioalves.cursomc.domain;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -17,41 +15,42 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 public class Pedido implements Serializable {
-
 	private static final long serialVersionUID = 1L;
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
+	@JsonFormat(pattern="dd/MM/yyyy hh:mm")
 	private Date instante;
-
-	@OneToOne(cascade=CascadeType.ALL,mappedBy="pedido")	
+	
+	@OneToOne(cascade=CascadeType.ALL, mappedBy="pedido")
 	private Pagamento pagamento;
 
 	@ManyToOne
 	@JoinColumn(name="cliente_id")
 	private Cliente cliente;
-
-	@ManyToOne
-	@JoinColumn(name="endereco_id")
-	private Endereco endereço ;
 	
-	@OneToMany(mappedBy="pedido")
+	@ManyToOne
+	@JoinColumn(name="endereco_de_entrega_id")
+	private Endereco enderecoDeEntrega;
+	
+	@OneToMany(mappedBy="id.pedido")
 	private Set<ItemPedido> itens = new HashSet<>();
 	
-	
 	public Pedido() {
-
 	}
 
-	public Pedido(Integer id, Date instante, Cliente cliente, Endereco endereço) {
+	public Pedido(Integer id, Date instante, Cliente cliente, Endereco enderecoDeEntrega) {
 		super();
 		this.id = id;
 		this.instante = instante;
 		this.cliente = cliente;
-		this.endereço = endereço;
+		this.enderecoDeEntrega = enderecoDeEntrega;
 	}
 
 	public Integer getId() {
@@ -86,25 +85,22 @@ public class Pedido implements Serializable {
 		this.cliente = cliente;
 	}
 
-	public Endereco getEndereço() {
-		return endereço;
+	public Endereco getEnderecoDeEntrega() {
+		return enderecoDeEntrega;
 	}
 
-	public void setEndereço(Endereco endereço) {
-		this.endereço = endereço;
+	public void setEnderecoDeEntrega(Endereco enderecoDeEntrega) {
+		this.enderecoDeEntrega = enderecoDeEntrega;
+	}
+
+	public Set<ItemPedido> getItens() {
+		return itens;
+	}
+
+	public void setItens(Set<ItemPedido> itens) {
+		this.itens = itens;
 	}
 	
-	public List<Produto> getProdutos(){
-		
-		List<Produto> produtos = new ArrayList<>();
-
-		for(ItemPedido itemPedido : this.itens) {
-			produtos.add(itemPedido.getProduto());
-		}
-		
-		return produtos;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -129,5 +125,6 @@ public class Pedido implements Serializable {
 			return false;
 		return true;
 	}
-
+	
+	
 }

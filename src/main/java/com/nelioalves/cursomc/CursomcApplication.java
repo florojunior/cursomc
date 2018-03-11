@@ -13,6 +13,7 @@ import com.nelioalves.cursomc.domain.Cidade;
 import com.nelioalves.cursomc.domain.Cliente;
 import com.nelioalves.cursomc.domain.Endereco;
 import com.nelioalves.cursomc.domain.Estado;
+import com.nelioalves.cursomc.domain.ItemPedido;
 import com.nelioalves.cursomc.domain.Pagamento;
 import com.nelioalves.cursomc.domain.PagamentoComBoleto;
 import com.nelioalves.cursomc.domain.PagamentoComCartao;
@@ -25,6 +26,7 @@ import com.nelioalves.cursomc.repository.CidadeRepository;
 import com.nelioalves.cursomc.repository.ClienteRepository;
 import com.nelioalves.cursomc.repository.EnderecoRepository;
 import com.nelioalves.cursomc.repository.EstadoRepository;
+import com.nelioalves.cursomc.repository.ItemPedidoRepository;
 import com.nelioalves.cursomc.repository.PagamentoRepository;
 import com.nelioalves.cursomc.repository.PedidoRepository;
 import com.nelioalves.cursomc.repository.ProdutoRepository;
@@ -55,6 +57,9 @@ public class CursomcApplication implements CommandLineRunner {
 	
 	@Autowired
 	private PagamentoRepository pagamentoRepository;
+	
+	@Autowired
+	private ItemPedidoRepository itemPedidoRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -105,6 +110,10 @@ public class CursomcApplication implements CommandLineRunner {
 		Pagamento pagamento2 = new PagamentoComCartao(null, EstadoPagamento.PENDENTE, pedido2,3);
 		pedido2.setPagamento(pagamento2);
 		
+		
+		
+		
+		
 		categoriaRepository.saveAll(Arrays.asList(categoria, categoria2));
 		produtoRepository.saveAll(Arrays.asList(produto, produto2, produto3));
 
@@ -116,6 +125,19 @@ public class CursomcApplication implements CommandLineRunner {
 		
 		pagamentoRepository.saveAll(Arrays.asList(pagamento,pagamento2));
 		pedidoRepository.saveAll(Arrays.asList(pedido,pedido2));
+		
+		ItemPedido ip1 = new ItemPedido(pedido, produto, 0.00, 1, 2000.00);
+		ItemPedido ip2 = new ItemPedido(pedido, produto3, 0.00, 2, 80.00);
+		ItemPedido ip3 = new ItemPedido(pedido2, produto2, 100.00, 1, 800.00);
+		
+		pedido.getItens().addAll(Arrays.asList(ip1, ip2));
+		pedido2.getItens().addAll(Arrays.asList(ip3));
+	
+		produto.getItens().addAll(Arrays.asList(ip1));
+		produto2.getItens().addAll(Arrays.asList(ip3));
+		produto3.getItens().addAll(Arrays.asList(ip2));
+		
+		itemPedidoRepository.saveAll(Arrays.asList(ip1,ip2,ip3));
 	}
 
 }
